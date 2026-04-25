@@ -16,7 +16,8 @@
     <div class="glow-bg"></div>
     <div class="glow-bg bg-2"></div>
 
-    <div class="container">
+    <!-- VIEW 1: TRANG CHỦ (DASHBOARD) -->
+    <div id="home-view" class="container">
         <!-- HEADER -->
         <header>
             <div class="badge">Hybrid Model Web-App</div>
@@ -29,27 +30,20 @@
         <section id="function-matrix">
             <div class="section-header">
                 <h2>Ma Trận Công Cụ</h2>
-                <p>Khám phá công cụ cụ thể theo từng loại tác vụ bạn cần xử lý.</p>
-                <div class="filter-bar" id="filter-bar">
-                    <button class="filter-btn active" data-filter="All">Tất cả Tool</button>
-                    <!-- Bộ lọc sẽ được render từ app.js -->
-                </div>
+                <p>MỖI CÔNG CỤ LÀ MỘT BÀI NGHIÊN CỨU SÂU. NHẤP VÀO THẺ ĐỂ VÀO CHUYÊN TRANG (DEEP-DIVE).</p>
+                <div class="filter-bar" id="filter-bar"></div>
             </div>
-            <div class="tools-grid" id="tools-grid">
-                <!-- Danh sách Tool Cards render từ app.js -->
-            </div>
+            <div class="tools-grid" id="tools-grid"></div>
         </section>
 
-        <!-- WORKFLOW PIPELINES (Luồng hướng dẫn làm việc) -->
+        <!-- WORKFLOW PIPELINES -->
         <section id="workflow-pipelines">
             <div class="section-header">
                 <h2>Guided Workflows</h2>
                 <p>Khám phá cách kết nối các công cụ để giải quyết trọn vẹn quy trình dự án từ A-Z một cách tự động và
                     mượt mà nhất.</p>
             </div>
-            <div class="pipelines-container" id="pipelines-container">
-                <!-- Luồng Timelines render từ app.js -->
-            </div>
+            <div class="pipelines-container" id="pipelines-container"></div>
         </section>
 
         <footer>
@@ -57,18 +51,19 @@
         </footer>
     </div>
 
-    <!-- Modal Chi tiết Công Cụ -->
-    <div id="tool-modal" class="modal-overlay">
-        <div class="modal-content glass">
-            <button id="close-modal" class="close-btn">&times;</button>
-            <div id="modal-body">
-                <!-- Nội dung render bằng JS -->
+    <!-- VIEW 2: CHUYÊN TRANG CHI TIẾT (SPA) -->
+    <div id="detail-view" class="hidden">
+        <div class="detail-container">
+            <button id="back-btn" class="back-btn">← Quay lại Bảng điều khiển</button>
+            <div id="detail-content-area">
+                <!-- Nội dung trang chi tiết Render từ app.js -->
             </div>
         </div>
     </div>
 
     <!-- Scripts -->
     <script src="data.js"></script>
+    <script src="detailsData.js"></script>
     <script src="app.js"></script>
 </body>
 

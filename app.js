@@ -1,15 +1,15 @@
 document.addEventListener('DOMContentLoaded', () => {
 
+    // DOM Elements Mapping
+    const homeView = document.getElementById('home-view');
+    const detailView = document.getElementById('detail-view');
     const filterBar = document.getElementById('filter-bar');
     const toolsGrid = document.getElementById('tools-grid');
     const pipelinesContainer = document.getElementById('pipelines-container');
+    const backBtn = document.getElementById('back-btn');
+    const detailContentArea = document.getElementById('detail-content-area');
 
-    // MODAL LOGIC DOM
-    const modalOverlay = document.getElementById('tool-modal');
-    const modalBody = document.getElementById('modal-body');
-    const closeModalBtn = document.getElementById('close-modal');
-
-    // 1. RENDER BỘ LỌC (FILTER BAR)
+    // 1. RENDER BỘ LỌC TÌM KIẾM
     const renderFilters = () => {
         const tags = getUniqueTags();
         filterBar.innerHTML = '';
@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (tag === 'All') {
                 btn.classList.add('active');
-                btn.textContent = 'Trải nghiệm Tất cả';
+                btn.textContent = 'Khám Phá Tất Bật Cả';
             } else {
                 btn.textContent = '#' + tag.replace('_', ' ');
             }
@@ -35,117 +35,108 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    // 2. RENDER CARD CÔNG CỤ (GRID)
+    // 2. RENDER GRID CÔNG CỤ (TRANG CHỦ)
     const renderToolsGrid = (filterTag = 'All') => {
         toolsGrid.innerHTML = '';
         const filteredTools = toolsData.filter(tool => tool.tags.includes(filterTag));
 
         filteredTools.forEach((tool, index) => {
-            const delay = index * 0.1;
-
             const card = document.createElement('div');
             card.className = 'tool-card glass';
-            card.style.animationDelay = `${delay}s`;
+            card.style.animationDelay = `${index * 0.1}s`;
 
-            const tagsHtml = tool.tags
-                .filter(t => t !== 'All')
-                .map(t => `<span class="tag">#${t.replace('_', ' ')}</span>`)
-                .join('');
-
+            const tagsHtml = tool.tags.filter(t => t !== 'All').map(t => `<span class="tag">#${t.replace('_', ' ')}</span>`).join('');
             card.innerHTML = `
                 <div class="tool-icon">${tool.icon}</div>
                 <h3 class="tool-title">${tool.name}</h3>
                 <p class="tool-desc">${tool.description}</p>
-                <div class="tool-tags">
-                    ${tagsHtml}
-                </div>
+                <div class="tool-tags">${tagsHtml}</div>
             `;
 
-            // Bắt sự kiện Click Card mở Modal chi tiết
+            // SPA Event: Click để nhảy sang trang chi tiết
             card.addEventListener('click', () => {
-                openToolModal(tool);
+                openDetailPage(tool.id, tool.icon);
             });
-
             toolsGrid.appendChild(card);
         });
     };
 
-    // 3. RENDER CÁC LUỒNG PIPELINES
+    // 3. RENDER WORKFLOW PIPELINES
     const renderPipelines = () => {
         pipelinesContainer.innerHTML = '';
         workflowsData.forEach(pipeline => {
             const pCard = document.createElement('div');
             pCard.className = 'pipeline-card glass';
-
-            let stepsHtml = '';
-            pipeline.steps.forEach(s => {
-                stepsHtml += `
-                    <div class="step-item">
-                        <div class="step-number">${s.step}</div>
-                        <div class="step-content">
-                            <div class="step-tool">${s.tool}</div>
-                            <div class="step-desc">${s.description}</div>
-                        </div>
+            let stepsHtml = pipeline.steps.map(s => `
+                <div class="step-item">
+                    <div class="step-number">${s.step}</div>
+                    <div class="step-content">
+                        <div class="step-tool">${s.tool}</div>
+                        <div class="step-desc">${s.description}</div>
                     </div>
-                `;
-            });
+                </div>
+            `).join('');
 
             pCard.innerHTML = `
                 <div class="pipeline-header">
                     <h3 class="pipeline-title">${pipeline.title}</h3>
                     <div class="pipeline-role">${pipeline.role}</div>
                 </div>
-                <div class="steps-container">
-                    ${stepsHtml}
-                </div>
+                <div class="steps-container">${stepsHtml}</div>
             `;
             pipelinesContainer.appendChild(pCard);
         });
     };
 
-    // 4. LOGIC MỞ MODAL CHI TIẾT
-    const openToolModal = (tool) => {
-        let featuresHtml = tool.features ? tool.features.map(f => `<li>${f}</li>`).join('') : '';
-        let appHtml = tool.application || 'Đang cập nhật...';
+    // 4. MỞ TRANG CHI TIẾT (SPA ROUTING LOGIC)
+    const openDetailPage = (toolId, toolIcon) => {
+        const fullData = toolsDetailData[toolId];
 
-        modalBody.innerHTML = `
-            <div class="modal-header">
-                <div class="modal-icon">${tool.icon}</div>
-                <h3 class="modal-title">${tool.name}</h3>
+        if (!fullData) {
+            alert('Quá trình Research chuyên môn cho tool này đang được Google thu thập. Vui lòng thử lại sau!');
+            return;
+        }
+
+        // Tạo cấu trúc từng Section
+        let sectionsHtml = fullData.sections.map(sec => {
+            let innerHtml = sec.content ? `<p>${sec.content}</p>` : '';
+            if (sec.items) {
+                innerHtml += `<ul>` + sec.items.map(item => `<li><strong>${item.name}</strong> <br/> ${item.desc}</li>`).join('') + `</ul>`;
+            }
+            return `
+                <div class="deep-section glass">
+                    <h2>${sec.title}</h2>
+                    <div class="deep-body">${innerHtml}</div>
+                </div>
+            `;
+        }).join('');
+
+        // Đổ Data vào vùng chứa Render
+        detailContentArea.innerHTML = `
+            <div class="detail-hero">
+                <div class="hero-icon">${toolIcon}</div>
+                <h1 class="hero-title">${fullData.heroTitle}</h1>
+                <p class="hero-subtitle">${fullData.subtitle}</p>
             </div>
-            <div class="modal-section">
-                <h4>✨ Tính Năng Nổi Bật</h4>
-                <ul>
-                    ${featuresHtml}
-                </ul>
-            </div>
-            <div class="modal-section" style="margin-top: 1.5rem;">
-                <h4>🎯 Khả Năng Ứng Dụng Hàng Ngày (Solo Worker)</h4>
-                <p>${appHtml}</p>
+            <div class="detail-sections-grid">
+                ${sectionsHtml}
             </div>
         `;
 
-        // Kích hoạt trượt hiển thị modal
-        modalOverlay.classList.remove('hidden');
-        modalOverlay.classList.add('active');
-        document.body.style.overflow = 'hidden'; // Khóa cuộn trang khi mở modal
+        // Animation Chuyển Cảnh
+        homeView.classList.add('hidden');
+        detailView.classList.remove('hidden');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
-    // Đóng Modal (Click Nút Close)
-    closeModalBtn.addEventListener('click', () => {
-        modalOverlay.classList.remove('active');
-        document.body.style.overflow = 'auto'; // Mở khóa cuộn trang
+    // 5. NÚT BACK VỀ TRANG CHỦ
+    backBtn.addEventListener('click', () => {
+        detailView.classList.add('hidden');
+        homeView.classList.remove('hidden');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 
-    // Đóng Modal (Click khoảng Overlay tối bên ngoài)
-    modalOverlay.addEventListener('click', (e) => {
-        if (e.target === modalOverlay) {
-            modalOverlay.classList.remove('active');
-            document.body.style.overflow = 'auto';
-        }
-    });
-
-    // INIT ALL SECTIONS
+    // INIT MẶC ĐỊNH KHI LOAD TRANG
     renderFilters();
     renderToolsGrid('All');
     renderPipelines();

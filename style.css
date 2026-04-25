@@ -22,6 +22,7 @@ body {
     line-height: 1.6;
     overflow-x: hidden;
     position: relative;
+    scroll-behavior: smooth;
 }
 
 /* Background Animated Glows */
@@ -107,11 +108,11 @@ section {
 }
 
 .section-header p {
-    color: var(--text-muted);
-    font-size: 1.1rem;
+    color: #ec4899;
+    font-size: 1.05rem;
+    font-weight: bold;
 }
 
-/* Base Glass Class */
 .glass {
     background: var(--glass-bg);
     backdrop-filter: blur(16px);
@@ -211,7 +212,7 @@ section {
     font-weight: 500;
 }
 
-/* Workflow Pipelines */
+/* Pipelines */
 .pipelines-container {
     display: grid;
     grid-template-columns: 1fr;
@@ -304,7 +305,6 @@ footer {
     border-top: 1px solid var(--glass-border);
 }
 
-/* Animations */
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -329,9 +329,139 @@ footer {
     }
 }
 
+/* ========================================= */
+/*       SINGLE PAGE APP (DETAIL VIEW)       */
+/* ========================================= */
+.hidden {
+    display: none !important;
+}
+
+#detail-view {
+    animation: fadeIn 0.4s ease forwards;
+    padding-bottom: 5rem;
+    padding-top: 3rem;
+}
+
+.detail-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.back-btn {
+    background: var(--glass-bg);
+    border: 1px solid rgba(59, 130, 246, 0.5);
+    color: #fff;
+    padding: 0.75rem 1.5rem;
+    border-radius: 30px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 3rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: var(--transition);
+}
+
+.back-btn:hover {
+    background: var(--primary-gradient);
+    transform: translateX(-5px);
+    box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+}
+
+.detail-hero {
+    text-align: center;
+    margin-bottom: 4rem;
+}
+
+.hero-icon {
+    font-size: 6rem;
+    margin-bottom: 1.5rem;
+    animation: fadeInDown 0.5s ease;
+}
+
+.hero-title {
+    font-size: 3.5rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    background: var(--primary-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    line-height: 1.2;
+}
+
+.hero-subtitle {
+    color: #cbd5e1;
+    font-size: 1.35rem;
+    max-width: 750px;
+    margin: 0 auto;
+    line-height: 1.7;
+}
+
+.detail-sections-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+}
+
+.deep-section {
+    padding: 3rem 2.5rem;
+}
+
+.deep-section h2 {
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+    color: #fff;
+    border-bottom: 2px solid rgba(236, 72, 153, 0.3);
+    padding-bottom: 1rem;
+}
+
+.deep-body p {
+    font-size: 1.15rem;
+    color: #f8fafc;
+    line-height: 1.8;
+    margin-bottom: 1rem;
+}
+
+.deep-body ul {
+    list-style: none;
+}
+
+.deep-body ul li {
+    font-size: 1.1rem;
+    color: #f8fafc;
+    margin-bottom: 1.5rem;
+    padding-left: 2rem;
+    position: relative;
+    line-height: 1.7;
+    background: rgba(0, 0, 0, 0.15);
+    padding: 1.5rem 1.5rem 1.5rem 3rem;
+    border-radius: 12px;
+}
+
+.deep-body ul li::before {
+    content: "⚡";
+    position: absolute;
+    left: 1rem;
+    top: 1.5rem;
+    font-size: 1.2rem;
+}
+
+.deep-body ul li strong {
+    color: #ec4899;
+    font-size: 1.2rem;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
 @media (max-width: 768px) {
     h1 {
-        font-size: 3rem;
+        font-size: 2.5rem;
+    }
+
+    .hero-title {
+        font-size: 2.5rem;
     }
 
     .container {
@@ -341,132 +471,8 @@ footer {
     .pipeline-card {
         padding: 1.5rem;
     }
-}
 
-/* Modal Pop-up UI Styles */
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(15, 23, 42, 0.75);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    z-index: 9999;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.3s ease;
-}
-
-.modal-overlay.hidden {
-    display: none;
-}
-
-.modal-overlay.active {
-    opacity: 1;
-    visibility: visible;
-}
-
-.modal-content {
-    background: var(--bg-dark);
-    width: 90%;
-    max-width: 700px;
-    max-height: 85vh;
-    overflow-y: auto;
-    position: relative;
-    padding: 3rem 2.5rem;
-    transform: translateY(30px);
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    border-radius: 24px;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
-}
-
-.modal-overlay.active .modal-content {
-    transform: translateY(0);
-}
-
-.close-btn {
-    position: absolute;
-    top: 1rem;
-    right: 1.5rem;
-    font-size: 2.5rem;
-    color: var(--text-muted);
-    background: none;
-    border: none;
-    cursor: pointer;
-    transition: color 0.3s ease;
-    line-height: 1;
-}
-
-.close-btn:hover {
-    color: #ef4444;
-}
-
-.modal-header {
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-    margin-bottom: 2rem;
-    border-bottom: 1px solid var(--glass-border);
-    padding-bottom: 1.5rem;
-}
-
-.modal-icon {
-    font-size: 4rem;
-}
-
-.modal-title {
-    font-size: 2.2rem;
-    color: #fff;
-    font-weight: 700;
-    background: var(--primary-gradient);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
-.modal-section {
-    margin-bottom: 1.5rem;
-}
-
-.modal-section h4 {
-    color: #93c5fd;
-    font-size: 1.15rem;
-    margin-bottom: 1rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.modal-section p {
-    color: #cbd5e1;
-    font-size: 1.05rem;
-    line-height: 1.7;
-}
-
-.modal-section ul {
-    list-style-type: none;
-    margin-left: 0;
-}
-
-.modal-section ul li {
-    position: relative;
-    padding-left: 1.5rem;
-    margin-bottom: 0.85rem;
-    color: #cbd5e1;
-    font-size: 1.05rem;
-    line-height: 1.6;
-}
-
-.modal-section ul li::before {
-    content: "•";
-    color: #ec4899;
-    position: absolute;
-    left: 0;
-    font-size: 1.5rem;
-    top: -7px;
+    .deep-section {
+        padding: 1.5rem;
+    }
 }
