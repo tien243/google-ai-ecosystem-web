@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
 
     // DOM Elements Mapping
-    const homeView = document.getElementById('home-view');
+    const mainDashboard = document.getElementById('main-dashboard');
     const detailView = document.getElementById('detail-view');
     const filterBar = document.getElementById('filter-bar');
     const toolsGrid = document.getElementById('tools-grid');
@@ -17,12 +17,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const btn = document.createElement('button');
             btn.classList.add('filter-btn');
 
-            if (tag === 'All') {
-                btn.classList.add('active');
-                btn.textContent = 'Khám Phá Tất Bật Cả';
-            } else {
-                btn.textContent = '#' + tag.replace('_', ' ');
-            }
+            btn.textContent = tag === 'All' ? '📌 Tất Cả' : '#' + tag.replace('_', ' ');
+            if (tag === 'All') btn.classList.add('active');
 
             btn.dataset.filter = tag;
 
@@ -35,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    // 2. RENDER GRID CÔNG CỤ (TRANG CHỦ)
+    // 2. RENDER GRID CÔNG CỤ
     const renderToolsGrid = (filterTag = 'All') => {
         toolsGrid.innerHTML = '';
         const filteredTools = toolsData.filter(tool => tool.tags.includes(filterTag));
@@ -53,9 +49,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="tool-tags">${tagsHtml}</div>
             `;
 
-            // SPA Event: Click để nhảy sang trang chi tiết
+            // Nhấp để mở giao diện Tin tức
             card.addEventListener('click', () => {
-                openDetailPage(tool.id, tool.icon);
+                openArticlePage(tool.id, tool.icon);
             });
             toolsGrid.appendChild(card);
         });
@@ -88,8 +84,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    // 4. MỞ TRANG CHI TIẾT (SPA ROUTING LOGIC)
-    const openDetailPage = (toolId, toolIcon) => {
+    // 4. LOGIC CHUYỂN DOM SANG TRANG TIN TỨC (NEWS ARTICLE)
+    const openArticlePage = (toolId, toolIcon) => {
         const fullData = toolsDetailData[toolId];
 
         if (!fullData) {
@@ -97,46 +93,50 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Tạo cấu trúc từng Section
+        // Tạo cấu trúc HTML cho Bài Báo (News Article)
         let sectionsHtml = fullData.sections.map(sec => {
-            let innerHtml = sec.content ? `<p>${sec.content}</p>` : '';
+            let innerHtml = sec.content ? `<p class="article-paragraph">${sec.content}</p>` : '';
             if (sec.items) {
-                innerHtml += `<ul>` + sec.items.map(item => `<li><strong>${item.name}</strong> <br/> ${item.desc}</li>`).join('') + `</ul>`;
+                innerHtml += `<ul class="article-list">` + sec.items.map(item => `<li><strong>${item.name}:</strong> <br/> ${item.desc}</li>`).join('') + `</ul>`;
             }
             return `
-                <div class="deep-section glass">
-                    <h2>${sec.title}</h2>
-                    <div class="deep-body">${innerHtml}</div>
+                <div class="article-section">
+                    <h2 class="section-heading">${sec.title}</h2>
+                    <div class="section-body">${innerHtml}</div>
                 </div>
             `;
         }).join('');
 
-        // Đổ Data vào vùng chứa Render
+        // Đổ Header nằm ngang và Body Bài Báo vào DOM
         detailContentArea.innerHTML = `
-            <div class="detail-hero">
-                <div class="hero-icon">${toolIcon}</div>
-                <h1 class="hero-title">${fullData.heroTitle}</h1>
-                <p class="hero-subtitle">${fullData.subtitle}</p>
+            <div class="article-header-block">
+                <div class="article-icon">${toolIcon}</div>
+                <div class="article-title-group">
+                    <h1 class="article-title-main">${fullData.heroTitle}</h1>
+                    <p class="article-subtitle">${fullData.subtitle}</p>
+                </div>
             </div>
-            <div class="detail-sections-grid">
+            <div class="article-content-grid">
                 ${sectionsHtml}
             </div>
         `;
 
-        // Animation Chuyển Cảnh
-        homeView.classList.add('hidden');
+        // Routing ẩn hiện
+        mainDashboard.classList.add('hidden');
         detailView.classList.remove('hidden');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        // Cuộn giao diện sao cho mỏ neo của Trang chi tiết nằm sát phần Header App
+        detailView.scrollIntoView({ behavior: 'smooth', block: 'start' });
     };
 
     // 5. NÚT BACK VỀ TRANG CHỦ
     backBtn.addEventListener('click', () => {
         detailView.classList.add('hidden');
-        homeView.classList.remove('hidden');
+        mainDashboard.classList.remove('hidden');
         window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 
-    // INIT MẶC ĐỊNH KHI LOAD TRANG
+    // INIT MẶC ĐỊNH
     renderFilters();
     renderToolsGrid('All');
     renderPipelines();
