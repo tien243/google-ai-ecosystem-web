@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google AI Ecosystem for Solo Workers</title>
+    <meta name="description" content="Khám phá và tối ưu hóa năng suất với các công cụ Google AI (Gemini, NotebookLM, Workspace) dành cho cá nhân làm việc độc lập.">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Background Gradient Glow -->
+    <div class="glow-bg"></div>
+    <div class="glow-bg bg-2"></div>
+    
+    <div class="container">
+        <!-- HEADER -->
+        <header>
+            <div class="badge">Hybrid Model Web-App</div>
+            <h1>Google AI Ecosystem</h1>
+            <p class="subtitle">Khám phá sức mạnh của <strong>Gemini Multimodal LLM</strong> và biến đổi luồng công việc Solo Worker để tăng cường năng suất 10x.</p>
+        </header>
+
+        <!-- FUNCTION MATRIX (Danh sách công cụ & Lọc) -->
+        <section id="function-matrix">
+            <div class="section-header">
+                <h2>Ma Trận Công Cụ</h2>
+                <p>Khám phá công cụ cụ thể theo từng loại tác vụ bạn cần xử lý.</p>
+                <div class="filter-bar" id="filter-bar">
+                    <button class="filter-btn active" data-filter="All">Tất cả Tool</button>
+                    <!-- Bộ lọc sẽ được render từ app.js -->
+                </div>
+            </div>
+            <div class="tools-grid" id="tools-grid">
+                <!-- Danh sách Tool Cards render từ app.js -->
+            </div>
+        </section>
+
+        <!-- WORKFLOW PIPELINES (Luồng hướng dẫn làm việc) -->
+        <section id="workflow-pipelines">
+            <div class="section-header">
+                <h2>Guided Workflows</h2>
+                <p>Khám phá cách kết nối các công cụ để giải quyết trọn vẹn quy trình dự án từ A-Z một cách tự động và mượt mà nhất.</p>
+            </div>
+            <div class="pipelines-container" id="pipelines-container">
+                <!-- Luồng Timelines render từ app.js -->
+            </div>
+        </section>
+
+        <footer>
+            <p>Designed for Solo Workers · Powered by Google AI ecosystem architecture.</p>
+        </footer>
+    </div>
+
+    <!-- Scripts -->
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
