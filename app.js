@@ -4,6 +4,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const toolsGrid = document.getElementById('tools-grid');
     const pipelinesContainer = document.getElementById('pipelines-container');
 
+    // MODAL LOGIC DOM
+    const modalOverlay = document.getElementById('tool-modal');
+    const modalBody = document.getElementById('modal-body');
+    const closeModalBtn = document.getElementById('close-modal');
+
     // 1. RENDER BỘ LỌC (FILTER BAR)
     const renderFilters = () => {
         const tags = getUniqueTags();
@@ -22,11 +27,8 @@ document.addEventListener('DOMContentLoaded', () => {
             btn.dataset.filter = tag;
 
             btn.addEventListener('click', () => {
-                // Remove active classes
                 document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-                // Add active to current
                 btn.classList.add('active');
-                // Re-render
                 renderToolsGrid(tag);
             });
             filterBar.appendChild(btn);
@@ -39,7 +41,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const filteredTools = toolsData.filter(tool => tool.tags.includes(filterTag));
 
         filteredTools.forEach((tool, index) => {
-            // Hiệu ứng Fade In Cascading
             const delay = index * 0.1;
 
             const card = document.createElement('div');
@@ -59,11 +60,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     ${tagsHtml}
                 </div>
             `;
+
+            // Bắt sự kiện Click Card mở Modal chi tiết
+            card.addEventListener('click', () => {
+                openToolModal(tool);
+            });
+
             toolsGrid.appendChild(card);
         });
     };
 
-    // 3. RENDER CÁC LUỒNG PIPELINES HƯỚNG DẪN DƯỚI DẠNG CARD LAYER
+    // 3. RENDER CÁC LUỒNG PIPELINES
     const renderPipelines = () => {
         pipelinesContainer.innerHTML = '';
         workflowsData.forEach(pipeline => {
@@ -95,6 +102,48 @@ document.addEventListener('DOMContentLoaded', () => {
             pipelinesContainer.appendChild(pCard);
         });
     };
+
+    // 4. LOGIC MỞ MODAL CHI TIẾT
+    const openToolModal = (tool) => {
+        let featuresHtml = tool.features ? tool.features.map(f => `<li>${f}</li>`).join('') : '';
+        let appHtml = tool.application || 'Đang cập nhật...';
+
+        modalBody.innerHTML = `
+            <div class="modal-header">
+                <div class="modal-icon">${tool.icon}</div>
+                <h3 class="modal-title">${tool.name}</h3>
+            </div>
+            <div class="modal-section">
+                <h4>✨ Tính Năng Nổi Bật</h4>
+                <ul>
+                    ${featuresHtml}
+                </ul>
+            </div>
+            <div class="modal-section" style="margin-top: 1.5rem;">
+                <h4>🎯 Khả Năng Ứng Dụng Hàng Ngày (Solo Worker)</h4>
+                <p>${appHtml}</p>
+            </div>
+        `;
+
+        // Kích hoạt trượt hiển thị modal
+        modalOverlay.classList.remove('hidden');
+        modalOverlay.classList.add('active');
+        document.body.style.overflow = 'hidden'; // Khóa cuộn trang khi mở modal
+    };
+
+    // Đóng Modal (Click Nút Close)
+    closeModalBtn.addEventListener('click', () => {
+        modalOverlay.classList.remove('active');
+        document.body.style.overflow = 'auto'; // Mở khóa cuộn trang
+    });
+
+    // Đóng Modal (Click khoảng Overlay tối bên ngoài)
+    modalOverlay.addEventListener('click', (e) => {
+        if (e.target === modalOverlay) {
+            modalOverlay.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+    });
 
     // INIT ALL SECTIONS
     renderFilters();
